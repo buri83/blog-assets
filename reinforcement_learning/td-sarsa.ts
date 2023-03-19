@@ -95,7 +95,7 @@ async function main(): Promise<void> {
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     for (let i = 0; i < 10; i++) {
-        let stepToGoal = 0;
+        let stepToGoal = 1;
         while (true) {
             await sleep(0);
 
