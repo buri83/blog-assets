@@ -16,10 +16,14 @@ function Q(s: State, a: Action): number {
     }
     return valueOfAction;
 }
-function updateQ(s: State, a: Action, nextS: State, reward: number): void {
+function updateQ(s: State, a: Action, r: number, nextS: State): void {
     // 学習率: 0.1
+    const step = 0.1;
+
     // 割引率: 0.9
-    const newQ = Q(s, a) + 0.1 * (reward + 0.9 * maxQ(nextS) - Q(s, a));
+    const discount = 0.9;
+
+    const newQ = Q(s, a) + step * (r + discount * maxQ(nextS) - Q(s, a));
     qTable.set(getKey(s, a), newQ);
 }
 function maxQ(s: State): number {
@@ -112,7 +116,7 @@ function choiceAction(s: State): Action {
             console.log(`遷移先: ${result.nextState}, 報酬: ${result.reward}`);
 
             // 行動価値関数の更新
-            updateQ(state, action, result.nextState, result.reward);
+            updateQ(state, action, result.reward, result.nextState);
 
             state = result.nextState;
             if (result.reward === 1) {
