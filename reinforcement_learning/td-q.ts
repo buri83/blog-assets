@@ -7,29 +7,26 @@ function getKey(s: State, a: Action): string {
 }
 
 /**
- * 行動価値関数
+ * 行動価値関数（テーブル形式）
  */
 function Q(s: State, a: Action): number {
-    const valueOfAction = qTable.get(getKey(s, a));
-    if (valueOfAction === undefined) {
+    const actionValue = qTable.get(getKey(s, a));
+    if (actionValue === undefined) {
         return 0;
     }
-    return valueOfAction;
+    return actionValue;
 }
 function updateQ(s: State, a: Action, r: number, nextS: State): void {
-    // 学習率: 0.1
-    const step = 0.1;
-
-    // 割引率: 0.9
-    const discount = 0.9;
+    const step = 0.1; // 学習率
+    const discount = 0.9; // 割引率
 
     const newQ = Q(s, a) + step * (r + discount * maxQ(nextS) - Q(s, a));
     qTable.set(getKey(s, a), newQ);
 }
 function maxQ(s: State): number {
-    const valueOfRightAction = Q(s, "Right");
-    const valueOfLeftAction = Q(s, "Left");
-    return Math.max(valueOfRightAction, valueOfLeftAction);
+    const rightActionValue = Q(s, "Right");
+    const leftActionValue = Q(s, "Left");
+    return Math.max(rightActionValue, leftActionValue);
 }
 
 /**
@@ -82,16 +79,16 @@ function choiceAction(s: State): Action {
         return randomChoice();
     }
 
-    const valueOfRightAction = Q(s, "Right");
-    const valueOfLeftAction = Q(s, "Left");
+    const rightActionValue = Q(s, "Right");
+    const leftActionValue = Q(s, "Left");
 
     // 行動価値が同じ場合はランダムに行動を選択する
-    if (valueOfLeftAction === valueOfRightAction) {
+    if (leftActionValue === rightActionValue) {
         return randomChoice();
     }
 
     // 行動価値が大きい行動を選択する
-    if (valueOfRightAction > valueOfLeftAction) {
+    if (rightActionValue > leftActionValue) {
         return "Right";
     }
     return "Left";

@@ -7,14 +7,14 @@ function getKey(s: State, a: Action): string {
 }
 
 /**
- * 行動価値関数
+ * 行動価値関数（テーブル形式）
  */
 function Q(s: State, a: Action): number {
-    const valueOfAction = qTable.get(getKey(s, a));
-    if (valueOfAction === undefined) {
+    const actionValue = qTable.get(getKey(s, a));
+    if (actionValue === undefined) {
         return 0;
     }
-    return valueOfAction;
+    return actionValue;
 }
 function updateQ(s: State, a: Action, reward: number, nextS: State, nextA: Action): void {
     // 学習率: 0.1
@@ -73,16 +73,16 @@ function choiceAction(s: State): Action {
         return randomChoice();
     }
 
-    const valueOfRightAction = Q(s, "Right");
-    const valueOfLeftAction = Q(s, "Left");
+    const rightActionValue = Q(s, "Right");
+    const leftActionValue = Q(s, "Left");
 
     // 行動価値が同じ場合はランダムに行動を選択する
-    if (valueOfLeftAction === valueOfRightAction) {
+    if (leftActionValue === rightActionValue) {
         return randomChoice();
     }
 
     // 行動価値が大きい行動を選択する
-    if (valueOfRightAction > valueOfLeftAction) {
+    if (rightActionValue > leftActionValue) {
         return "Right";
     }
     return "Left";
