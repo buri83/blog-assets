@@ -97,7 +97,7 @@ function choiceAction(s: State): Action {
     return "Left";
 }
 
-(async () => {
+async function main(): Promise<void> {
     let state: State = "S0";
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -131,4 +131,5 @@ function choiceAction(s: State): Action {
         console.log(`Q(${state},Right) = ${Q(state, "Right")?.toFixed(3)}`);
         console.log(`Q(${state},Left) = ${Q(state, "Left")?.toFixed(3)}`);
     }
-})();
+}
+main();
