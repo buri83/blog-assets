@@ -16,16 +16,11 @@ function Q(s: State, a: Action): number {
     }
     return valueOfAction;
 }
-function updateQ(s: State, a: Action, nextS: State, reward: number): void {
+function updateQ(s: State, a: Action, reward: number, nextS: State, nextA: Action): void {
     // 学習率: 0.1
     // 割引率: 0.9
-    const newQ = Q(s, a) + 0.1 * (reward + 0.9 * maxQ(nextS) - Q(s, a));
+    const newQ = Q(s, a) + 0.1 * (reward + 0.9 * Q(nextS, nextA) - Q(s, a));
     qTable.set(getKey(s, a), newQ);
-}
-function maxQ(s: State): number {
-    const valueOfRightAction = Q(s, "Right");
-    const valueOfLeftAction = Q(s, "Left");
-    return Math.max(valueOfRightAction, valueOfLeftAction);
 }
 
 /**
@@ -95,26 +90,31 @@ function choiceAction(s: State): Action {
 
 (async () => {
     let state: State = "S0";
+    let action: Action = choiceAction(state);
+
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     for (let i = 0; i < 10; i++) {
         let stepToGoal = 0;
         while (true) {
-            await sleep(10);
+            await sleep(0);
+
             console.log("---------------------");
             console.log(`行動数: ${stepToGoal}`);
             console.log(`現在の状態: ${state}`);
 
-            const action = choiceAction(state);
             console.log(`選択された行動: ${action}`);
 
             const result = getActionResult(state, action);
             console.log(`遷移先: ${result.nextState}, 報酬: ${result.reward}`);
 
+            const nextAction = choiceAction(state);
+
             // 行動価値関数の更新
-            updateQ(state, action, result.nextState, result.reward);
+            updateQ(state, action, result.reward, result.nextState, nextAction);
 
             state = result.nextState;
+            action = nextAction;
             if (result.reward === 1) {
                 console.log("> 報酬獲得！！！！\n\n");
                 break;
