@@ -11,15 +11,15 @@ function getKey(s: State, a: Action): string {
  */
 function Q(s: State, a: Action): number {
     const valueOfAction = qTable.get(getKey(s, a));
-    if (!valueOfAction) {
+    if (valueOfAction === undefined) {
         return 0;
     }
     return valueOfAction;
 }
 function updateQ(s: State, a: Action, nextS: State, reward: number): void {
-    // 学習率: 1
-    // 割引率: 0.1
-    const newQ = Q(s, a) + 1 * (reward + 0.1 * V(nextS) - Q(s, a));
+    // 学習率: 0.1
+    // 割引率: 0.9
+    const newQ = Q(s, a) + 0.1 * (reward + 0.9 * V(nextS) - Q(s, a));
     qTable.set(getKey(s, a), newQ);
 }
 
